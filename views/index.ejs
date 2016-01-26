@@ -63,25 +63,25 @@
 					</div>
 					<div class="login-div col s12 m6">
 						<div class="row">
-							<form class="col s12">
+							<form id="login-form" method="post" action="" class="col s12">
 								<div class="row">
 									<div class="input-field col s12">
 										<i class="material-icons prefix">account_circle</i>
-										<input id="icon_emai" type="email" class="validate">
+										<input id="icon_emai" type="email" name="email" class="validate">
 										<label for="icon_email">Email</label>
 									</div>
 									<div class="input-field col s12">
 										<i class="material-icons prefix">vpn_key</i>
-										<input id="icon_pass" type="password" class="validate">
+										<input id="icon_pass" type="password" name="password" class="validate">
 										<label for="icon_pass">Password</label>
 									</div>
 									<div class="col s12">
 										<div class="row login-btns-row">
 											<div class="col s6">
-												<a class="waves-effect waves-light btn">Login</a>
+												<button name="login" type="submit" class="waves-effect waves-light btn">Login</button>
 											</div>
 											<div class="col s6">
-												<a id="signup-btn" class="waves-effect waves-light red btn">Sign Up</a>
+												<button id="signup-btn" class="waves-effect waves-light red btn">Sign Up</button>
 											</div>
 											<div class="col s12 forgot-div">
 												<label class="forgot-lbl">Forgot your password? </label><div><a href="#">Click here!</a></div>
@@ -185,27 +185,27 @@
 				<p style="font-size: 15px; font-weight: bold; text-align: center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.</p>
 
 				<div class="row">
-							<form class="col s12">
+							<form class="col s12" action="" method="post">
 								<div class="row">
 									<div class="input-field col s12">
 										<i class="material-icons prefix">account_circle</i>
-										<input id="icon_emai" type="email" class="validate">
+										<input id="icon_emai" name="reg-email" type="email" class="validate">
 										<label for="icon_email">Email</label>
 									</div>
 									<div class="input-field col s12">
 										<i class="material-icons prefix">vpn_key</i>
-										<input id="icon_pass" type="password" class="validate">
+										<input id="icon_pass" name="reg-password" type="password" class="validate">
 										<label for="icon_pass">Password</label>
 									</div>
 									<div class="input-field col s12">
 										<i class="material-icons prefix">repeat</i>
-										<input id="icon_confirm" type="password" class="validate">
+										<input id="icon_confirm" name="reg-confirm" type="password" class="validate">
 										<label for="icon_confirm">Confirm Password</label>
 									</div>
 									<div class="col s12">
 										<div class="row login-btns-row">
 											<div class="col s6">
-												<a class="waves-effect waves-light btn">Submit!</a>
+												<button type="submit" name="register" class="waves-effect waves-light btn">Submit!</button>
 											</div>
 										</div>
 									</div>
