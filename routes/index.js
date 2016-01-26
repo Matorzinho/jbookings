@@ -15,26 +15,62 @@ connection.connect();
 
 /* GET home page. */
 router.get('/jbookings', function(req, res, next) {
-	res.render('index', { title: 'Express' });
+	if(checkSession(req, res)){
+		res.writeHead(302, {Location: '/jbookings/profile'});
+		res.end();
+	}else{
+		res.render('index', { title: 'Express' });
+	}
 });
 
 /* POST home page. */
 router.post('/jbookings', function(req, res, next) {
-	res.render('index', { title: 'Express' });
 	if(req.body.hasOwnProperty('login')){//user trying to login
 		console.log("user trying to login");
+		validateLogin(req.body, req, res);
 	}else if(req.body.hasOwnProperty('register')){//user trying to register
 		console.log("user trying to register");
 		if(validateRegister(req.body)){//validated
 			console.log("SUCCEEDED TO VALIDATE, TRYING TO INSERT");
-			insertUser(req.body);
+			insertUser(req.body, res);
+				
 		}else{//did not validate
 			console.log("FAILED TO VALIDATE, ABORTING...");
+			res.render('index', { message: 3 });
+			res.end();
 		}
 	}
 	console.log("woo"+JSON.stringify(req.body));
+	// res.end();
 });
-//validating user register input
+
+/* GET profile page. */
+router.get('/jbookings/profile', function(req, res, next) {
+	if(checkSession(req, res)){
+		res.render('profile', { username: req.session.user });
+	}else{
+		res.writeHead(302, {Location: '/jbookings'});
+		res.end();
+	}
+});
+
+/* GET logout page */
+router.get('/jbookings/logout', function(req, res, next) {
+	req.session.destroy();
+	res.writeHead(302, {Location: '/jbookings'});
+	res.end();
+});
+
+//checking session to see if user is logged in
+function checkSession(req, res){
+	if(typeof req.session != 'undefined'){
+		if(typeof req.session.user != 'undefined' && req.session.user != ''){
+			return 1;
+		}
+	}
+	return 0
+}
+// validating user register input
 function validateRegister(obj){
 	if(obj.hasOwnProperty("reg-email") && obj["reg-email"] != ""){
 		if(obj.hasOwnProperty("reg-password") && obj["reg-password"] != ""){
@@ -50,7 +86,7 @@ function validateRegister(obj){
 	return 0;
 }
 //doing directly without email validation for now
-function insertUser(obj){
+function insertUser(obj, res){
 	var user = {
 		email: obj["reg-email"],
 		password: obj["reg-password"],
@@ -59,12 +95,33 @@ function insertUser(obj){
 	connection.query('insert into users set ?', user, function(err, result){
 		if(err){
 			console.error(err);
+			res.render('index', { message: 2 });
 		}else{
 			console.log(result);
-			alert("error");
-			setTimeout(function(){alert("Failed to register, please contact an Administrator.")}, 3000);
+			res.render('index', { message: 1 });
 		}
+		res.end();
 	});
+}
+
+function validateLogin(obj, req, res){
+	connection.query('select count(*) as "check" from users where email = ? and password = ?', [obj["login-email"], obj["login-password"]], function(err, rows, fields){
+		if (err) {
+			console.error(err);
+		}else if(rows[0]['check'] == 1){//logged in successfuly
+			console.log(JSON.stringify(rows));
+			console.log("setting session ", obj["login-email"]);
+			req.session.user = obj["login-email"];
+			console.log("session value ", req.session.user);
+			res.writeHead(302, {Location: '/jbookings/profile'});
+
+			// res.render('profile', { username: obj["login-email"]});
+			res.end();
+		}else{//wrong user/pass
+			res.render('index', { message: 4 });
+			res.end();
+		}
+	})
 }
 module.exports = router;
 

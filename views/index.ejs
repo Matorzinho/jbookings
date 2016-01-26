@@ -24,7 +24,29 @@
 					$('.login-div').addClass('come-in-left');
 				}, 1000);
 				$('.header-bg, .logo-txt').addClass('come-in-left');
-				// $('.logo-txt').addClass('come-in-left');
+				
+
+				<% if(typeof message !='undefined') { %>
+					switch(<%= message %>){
+						case 1:
+							Materialize.toast("Registered successfully, you can now login.", 5000);
+							break;
+						case 2:
+							Materialize.toast("Failed to create user, contact an administrator.", 5000);
+							break;
+						case 3:
+							Materialize.toast("Failed to create user, check if you inserted valid data.", 5000);
+							break;
+						case 4:
+							Materialize.toast("Wrong username or password.", 5000);
+							break;
+						case 5:
+							Materialize.toast("Your session expired, please login again.", 5000);
+							break;
+					}
+				<% } %>
+				
+
 			});
 			var options = [
 				{selector: '#how-works', offset: 150, callback: "$('#how-works .module').first().addClass('come-in-left');" },
@@ -67,12 +89,12 @@
 								<div class="row">
 									<div class="input-field col s12">
 										<i class="material-icons prefix">account_circle</i>
-										<input id="icon_emai" type="email" name="email" class="validate">
+										<input id="icon_emai" type="email" name="login-email" class="validate">
 										<label for="icon_email">Email</label>
 									</div>
 									<div class="input-field col s12">
 										<i class="material-icons prefix">vpn_key</i>
-										<input id="icon_pass" type="password" name="password" class="validate">
+										<input id="icon_pass" type="password" name="login-password" class="validate">
 										<label for="icon_pass">Password</label>
 									</div>
 									<div class="col s12">
