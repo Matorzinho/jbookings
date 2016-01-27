@@ -17,7 +17,187 @@
 	    <script src="/javascripts/materialize.min.js"></script>
 	</head>
 	<body>
-		<h1>whats up <%= username%></h1>
-		<a href="logout">logout</a>
+		<script type="text/javascript">
+			$( document ).ready(function(){
+				$(".button-collapse").sideNav();
+				$('select').material_select();
+				$('.modal-trigger').leanModal();
+				$('.datepicker').pickadate({
+					selectMonths: true, // Creates a dropdown to control month
+					selectYears: false, // Creates a dropdown of 15 years to control year
+					container: "body",
+					placeholder: "lala"
+				});
+      
+				// Change the selector if needed
+// var $table = $('table'),
+//     $bodyCells = $table.find('tbody tr:first').children(),
+//     colWidth;
+
+// // Get the tbody columns width array
+// colWidth = $bodyCells.map(function() {
+//     return $(this).width();
+// }).get();
+
+// // Set the width of thead columns
+// $table.find('thead tr').children().each(function(i, v) {
+//     $(v).width(colWidth[i]);
+// });  
+			});
+		</script>
+		<nav>
+			<div class="nav-wrapper" style="background-color: #885ead">
+				<a href="#" class="brand-logo" style="margin-left: 10px">JBookings</a>
+				<a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+				<ul class="right hide-on-med-and-down">
+					<li><a><%= username%></a></li>
+					<li><a href="logout">Logout</a></li>
+				</ul>
+				<ul id="mobile-menu" class="side-nav">
+					<li><a href="logout">Logout</a></li>
+				</ul>
+			</div>
+		</nav>
+		<div style="background-color: #ccbadc">
+
+			<div class="container" style="padding-top: 20px; min-height: 500px; height: calc(100vh - 64px)">
+			<!-- <h3 style="margin-top: 0; text-align: center; -webkit-font-smoothing: antialiased;">whats up <%= username%></h3> -->
+				<div class="row">
+					<div class="col s12 m2" style="margin-bottom: 10px">
+						<a data-position="right" data-delay="50" data-tooltip="New Booking" class="btn-floating btn-large waves-effect waves-light purple tooltipped modal-trigger" href="#new-booking"><i class="material-icons">add</i></a>
+						<!-- Modal Structure -->
+						<form method="post" action="">
+						<div id="new-booking" class="modal bottom-sheet">
+							<div class="modal-content">
+								<h4>New Booking</h4>
+									<div class="row">
+										<div class="input-field col s6">
+											<input id="first_name" type="text" class="validate">
+											<label for="first_name">First Name</label>
+										</div>
+										<div class="input-field col s6">
+											<input id="last_name" type="text" class="validate">
+											<label for="last_name">Last Name</label>
+										</div>
+										<div class="input-field col s6">
+											<input type="date" name="date" class="datepicker">
+											<label for="date">Date</label>
+										</div>
+										
+										<div class="input-field col s6">
+											<input id="phone" type="text" class="validate">
+											<label for="last_name">Phone</label>
+										</div>
+									</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class=" modal-action modal-close waves-effect waves-green btn-flat">Save</button>
+							</div>
+							</form>
+
+						</div>
+						
+					</div>
+					<div class="input-field col s12 m5">
+						<select>
+						<option value="" disabled selected>Filter by Month</option>
+							<option value="1">January</option>
+							<option value="2">February</option>
+							<option value="3">March</option>
+							<option value="4">April</option>
+							<option value="5">May</option>
+							<option value="6">June</option>
+							<option value="7">July</option>
+							<option value="8">August</option>
+							<option value="9">September</option>
+							<option value="10">October</option>
+							<option value="11">November</option>
+							<option value="12">December</option>
+						</select>
+						<label>Month</label>
+				  	</div>
+				  	<div class="input-field col s12 m5">
+						<select>
+						<option value="" disabled selected>Filter by Year</option>
+							<option value="2016" selected="true">2016</option>
+						</select>
+						<label>Year</label>
+				  	</div>
+				</div>	
+				<div class="row">
+
+					<div class="col s12" style="background-color: #ddd1e7; height: calc(100vh - 325px); min-height: 200px; overflow-y: scroll;">
+						<table class="responsive-table">
+							<thead style="">
+								<tr>
+									<th data-field="id">Date</th>
+									<th data-field="name">Time</th>
+									<th data-field="price">Name</th>
+									<th data-field="price">Phone</th>
+								</tr>
+							</thead>
+
+							<tbody style="height: 300px; overflow-y: scroll; ">
+								<tr>
+									<td>Alvin</td>
+									<td>Eclair</td>
+									<td>$0.87</td>
+									<td>$0.87</td>
+								</tr>
+								<tr>
+									<td>Alan</td>
+									<td>Jellybean</td>
+									<td>$3.76</td>
+									<td>$3.76</td>
+								</tr>
+								<tr>
+									<td>Jonathan</td>
+									<td>Lollipop</td>
+									<td>$7.00</td>
+									<td>$7.00</td>
+								</tr>
+								<tr>
+									<td>Alvin</td>
+									<td>Eclair</td>
+									<td>$0.87</td>
+									<td>$0.87</td>
+								</tr>
+								<tr>
+									<td>Alan</td>
+									<td>Jellybean</td>
+									<td>$3.76</td>
+									<td>$3.76</td>
+								</tr>
+								<tr>
+									<td>Jonathan</td>
+									<td>Lollipop</td>
+									<td>$7.00</td>
+									<td>$7.00</td>
+								</tr>
+								<tr>
+									<td>Alvin</td>
+									<td>Eclair</td>
+									<td>$0.87</td>
+									<td>$0.87</td>
+								</tr>
+								<tr>
+									<td>Alan</td>
+									<td>Jellybean</td>
+									<td>$3.76</td>
+									<td>$3.76</td>
+								</tr>
+								<tr>
+									<td>Jonathan</td>
+									<td>Lollipop</td>
+									<td>$7.00</td>
+									<td>$7.00</td>
+								</tr>
+							</tbody>
+				        </table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 	</body>
 </html>

@@ -115,3 +115,6 @@ img.responsive-img{
 #feedback li{
 	opacity: 0;
 }
+.dropdown-content{
+	max-height: 250px!important; 
+}
