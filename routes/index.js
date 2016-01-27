@@ -54,13 +54,58 @@ router.get('/jbookings/profile', function(req, res, next) {
 	}
 });
 
+/* GET list of bookings. */
+router.get('/jbookings/profile/listbookings', function(req, res, next) {
+	console.log("req.query = ", req.query);
+	console.log("========================================");
+	queryBookings(res, req.query.m);
+});
+
+
+/* POST profile page (user is adding new booking) */
+router.post('/jbookings/profile', function(req, res, next) {
+	var filter = req.body.filter;
+	delete req.body.filter;
+	console.log("ajax started");
+	if(validateBooking(req.body)){
+		insertBooking(req.body, res, filter)
+	}else{
+		res.send("0");
+		res.end();
+	}
+	console.log("req ", req.body);
+});
+
 /* GET logout page */
 router.get('/jbookings/logout', function(req, res, next) {
 	req.session.destroy();
 	res.writeHead(302, {Location: '/jbookings'});
 	res.end();
 });
-
+//querying db for bookings (filtering by month when aplicable)
+function queryBookings(res, filter){
+	var queryAddon = filter ? "where month(date) = "+filter : "";
+	connection.query('select DATE_FORMAT(date,"%d/%m/%Y") as "nicedate", time, concat_ws(" ", fname, lname) as "name", phone from bookings '+queryAddon+' order by date desc', function(err, rows, fields){
+		if (err) {
+			console.error(err);
+		}else {
+			console.log(rows);
+			
+			res.send(tbodyContent(rows));
+		}
+		res.end();
+	})
+}
+//preparing table content
+function tbodyContent(rows){
+	var tbodyContent = "";
+	rows.forEach(function(el, i, arr){
+		tbodyContent += "<tr>";
+		for(prop in el) tbodyContent += "<td>" +el[prop]+ "</td>";
+		tbodyContent += "</tr>";
+	});
+	return tbodyContent;
+}
 //checking session to see if user is logged in
 function checkSession(req, res){
 	if(typeof req.session != 'undefined'){
@@ -70,6 +115,22 @@ function checkSession(req, res){
 	}
 	return 0
 }
+//validating new booking input
+function validateBooking(obj){
+	if(obj.hasOwnProperty("date") && obj["date"] != ""){
+		if(obj.hasOwnProperty("time") && obj["time"] != ""){
+			if(obj.hasOwnProperty("fname") && obj["fname"] != ""){
+				if(obj.hasOwnProperty("lname") && obj["lname"] != ""){
+					if(obj.hasOwnProperty("phone") && obj["phone"] != ""){
+						return 1
+					}
+				}
+			}
+		}
+	}
+	return 0
+}
+
 // validating user register input
 function validateRegister(obj){
 	if(obj.hasOwnProperty("reg-email") && obj["reg-email"] != ""){
@@ -103,7 +164,23 @@ function insertUser(obj, res){
 		res.end();
 	});
 }
-
+//inserting bookings
+function insertBooking(obj, res, filter){
+	connection.query('insert into bookings set ?', obj, function(err, result){
+		if(err){
+			console.error(err);
+				res.send("0");
+				res.end();
+			// res.render('index', { message: 2 });
+		}else{
+			console.log(result);
+			queryBookings(res, filter);
+			// res.send("1");
+			// res.render('index', { message: 1 });
+		}
+	});
+}
+//
 function validateLogin(obj, req, res){
 	connection.query('select count(*) as "check" from users where email = ? and password = ?', [obj["login-email"], obj["login-password"]], function(err, rows, fields){
 		if (err) {

@@ -26,24 +26,76 @@
 					selectMonths: true, // Creates a dropdown to control month
 					selectYears: false, // Creates a dropdown of 15 years to control year
 					container: "body",
-					placeholder: "lala"
+					min: new Date(new Date().setDate(new Date().getDate()-7)),
+					max: new Date()
 				});
-      
-				// Change the selector if needed
-// var $table = $('table'),
-//     $bodyCells = $table.find('tbody tr:first').children(),
-//     colWidth;
-
-// // Get the tbody columns width array
-// colWidth = $bodyCells.map(function() {
-//     return $(this).width();
-// }).get();
-
-// // Set the width of thead columns
-// $table.find('thead tr').children().each(function(i, v) {
-//     $(v).width(colWidth[i]);
-// });  
+				filterMonth();
 			});
+			function filterMonth(){
+				var urlAddon = $('#month-filter').val() ? "?m="+$('#month-filter').val() : "";
+				$.ajax({
+			        url: 'http://localhost:3000/jbookings/profile/listBookings'+urlAddon,
+			        type: 'GET',
+			        timeout: 5000,
+			        success: function(result) {
+		        		$('#bookings-table tbody').html(result);
+			        	console.log(result);
+			            // $("#test").append(data);
+			        },
+			        error: function(jqXHR, textStatus, errorThrown) {
+			            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
+			        }
+			    });
+			}
+			function prepareDate(){
+				var auxDate = $('#booking-date').val().split(' ');
+				var year = auxDate[2];
+				var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(auxDate[1].substring(0, auxDate[1].length-1))+1;
+				month = month < 10 ? '0'+month : month;
+				var day = auxDate[0];
+				return [year, month, day].join('-');
+			}
+			function prepareTime(){
+				var auxDate = new Date();
+				var hours = auxDate.getHours() < 10 ? '0' + auxDate.getHours() : auxDate.getHours();
+				var minutes = auxDate.getMinutes() < 10 ? '0' + auxDate.getMinutes() : auxDate.getMinutes();
+				return hours + ':' + minutes;
+			}
+			function submitBooking(){
+				var bookingDate = prepareDate();
+				var bookingTime = prepareTime();
+				var bookingFname = $('#booking-fname').val();
+				var bookingLname = $('#booking-lname').val();
+				var bookingPhone = $('#booking-phone').val();
+				var myData = {
+					date: bookingDate,
+					time: bookingTime,
+					fname: bookingFname,
+					lname: bookingLname,
+					phone: bookingPhone,
+					filter: $('#month-filter').val()
+				};
+
+				$.ajax({
+			        url: 'http://localhost:3000/jbookings/profile',
+			        data: myData,
+			        type: 'POST',
+			        // dataType: "jsonp",
+			        // jsonpCallback: "_testcb",
+			        // cache: false,
+			        timeout: 5000,
+			        success: function(result) {
+			        	console.log(result);
+			        	var msg = result!=0 ? "Booking inserted successfuly" : "Something went wrong while trying to insert booking";
+			        	Materialize.toast(msg, 4000);
+		        		$('#bookings-table tbody').html(result);
+			            // $("#test").append(data);
+			        },
+			        error: function(jqXHR, textStatus, errorThrown) {
+			            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
+			        }
+			    });
+			}
 		</script>
 		<nav>
 			<div class="nav-wrapper" style="background-color: #885ead">
@@ -66,41 +118,38 @@
 					<div class="col s12 m2" style="margin-bottom: 10px">
 						<a data-position="right" data-delay="50" data-tooltip="New Booking" class="btn-floating btn-large waves-effect waves-light purple tooltipped modal-trigger" href="#new-booking"><i class="material-icons">add</i></a>
 						<!-- Modal Structure -->
-						<form method="post" action="">
 						<div id="new-booking" class="modal bottom-sheet">
 							<div class="modal-content">
 								<h4>New Booking</h4>
 									<div class="row">
 										<div class="input-field col s6">
-											<input id="first_name" type="text" class="validate">
-											<label for="first_name">First Name</label>
+											<input id="booking-fname" name="fname" type="text" class="validate">
+											<label for="fname">First Name</label>
 										</div>
 										<div class="input-field col s6">
-											<input id="last_name" type="text" class="validate">
-											<label for="last_name">Last Name</label>
+											<input id="booking-lname" name="lname" type="text" class="validate">
+											<label for="lname">Last Name</label>
 										</div>
 										<div class="input-field col s6">
-											<input type="date" name="date" class="datepicker">
+											<input id="booking-date" type="date" name="date" class="datepicker">
 											<label for="date">Date</label>
 										</div>
 										
 										<div class="input-field col s6">
-											<input id="phone" type="text" class="validate">
-											<label for="last_name">Phone</label>
+											<input id="booking-phone" name="phone" type="text" class="validate">
+											<label for="phone">Phone</label>
 										</div>
 									</div>
 							</div>
 							<div class="modal-footer">
-								<button type="submit" class=" modal-action modal-close waves-effect waves-green btn-flat">Save</button>
+								<button onclick="submitBooking()" class=" modal-action modal-close waves-effect waves-green btn-flat">Save</button>
 							</div>
-							</form>
-
 						</div>
 						
 					</div>
 					<div class="input-field col s12 m5">
-						<select>
-						<option value="" disabled selected>Filter by Month</option>
+						<select id="month-filter" onchange="filterMonth()">
+							<option value="0" disabled selected>Filter by Month</option>
 							<option value="1">January</option>
 							<option value="2">February</option>
 							<option value="3">March</option>
@@ -127,7 +176,7 @@
 				<div class="row">
 
 					<div class="col s12" style="background-color: #ddd1e7; height: calc(100vh - 325px); min-height: 200px; overflow-y: scroll;">
-						<table class="responsive-table">
+						<table id="bookings-table" class="responsive-table">
 							<thead style="">
 								<tr>
 									<th data-field="id">Date</th>
@@ -138,60 +187,6 @@
 							</thead>
 
 							<tbody style="height: 300px; overflow-y: scroll; ">
-								<tr>
-									<td>Alvin</td>
-									<td>Eclair</td>
-									<td>$0.87</td>
-									<td>$0.87</td>
-								</tr>
-								<tr>
-									<td>Alan</td>
-									<td>Jellybean</td>
-									<td>$3.76</td>
-									<td>$3.76</td>
-								</tr>
-								<tr>
-									<td>Jonathan</td>
-									<td>Lollipop</td>
-									<td>$7.00</td>
-									<td>$7.00</td>
-								</tr>
-								<tr>
-									<td>Alvin</td>
-									<td>Eclair</td>
-									<td>$0.87</td>
-									<td>$0.87</td>
-								</tr>
-								<tr>
-									<td>Alan</td>
-									<td>Jellybean</td>
-									<td>$3.76</td>
-									<td>$3.76</td>
-								</tr>
-								<tr>
-									<td>Jonathan</td>
-									<td>Lollipop</td>
-									<td>$7.00</td>
-									<td>$7.00</td>
-								</tr>
-								<tr>
-									<td>Alvin</td>
-									<td>Eclair</td>
-									<td>$0.87</td>
-									<td>$0.87</td>
-								</tr>
-								<tr>
-									<td>Alan</td>
-									<td>Jellybean</td>
-									<td>$3.76</td>
-									<td>$3.76</td>
-								</tr>
-								<tr>
-									<td>Jonathan</td>
-									<td>Lollipop</td>
-									<td>$7.00</td>
-									<td>$7.00</td>
-								</tr>
 							</tbody>
 				        </table>
 					</div>

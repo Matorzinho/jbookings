@@ -118,3 +118,6 @@ img.responsive-img{
 .dropdown-content{
 	max-height: 250px!important; 
 }
+#bookings-table tbody tr:hover{
+	background-color: pink
+}
