@@ -1,6 +1,9 @@
 /*.parallax-container {
     height: 550px;
 }*/
+ html {
+    font-family: sans-serif, GillSans, Calibri, Trebuchet;
+  }
 .header-parallax{
 	height: 650px;
 }

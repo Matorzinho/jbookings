@@ -29,12 +29,14 @@
 					min: new Date(new Date().setDate(new Date().getDate()-7)),
 					max: new Date()
 				});
+				console.log("?");
 				filterMonth();
 			});
 			function filterMonth(){
 				var urlAddon = $('#month-filter').val() ? "?m="+$('#month-filter').val() : "";
+				console.log("TRYING TO LIST BOOKINGS");
 				$.ajax({
-			        url: 'http://localhost:3000/jbookings/profile/listBookings'+urlAddon,
+			        url: 'http://ec2-52-17-214-161.eu-west-1.compute.amazonaws.com:9000/jbookings/profile/listbookings'+urlAddon,
 			        type: 'GET',
 			        timeout: 5000,
 			        success: function(result) {
@@ -43,6 +45,7 @@
 			            // $("#test").append(data);
 			        },
 			        error: function(jqXHR, textStatus, errorThrown) {
+			        	console.log("this happened: ",jqXHR);
 			            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
 			        }
 			    });
@@ -77,7 +80,7 @@
 				};
 
 				$.ajax({
-			        url: 'http://localhost:3000/jbookings/profile',
+			        url: 'http://ec2-52-17-214-161.eu-west-1.compute.amazonaws.com:9000/jbookings/profile',
 			        data: myData,
 			        type: 'POST',
 			        // dataType: "jsonp",
