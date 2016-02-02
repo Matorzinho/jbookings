@@ -5,7 +5,7 @@
     font-family: sans-serif, GillSans, Calibri, Trebuchet;
   }
 .header-parallax{
-	height: 650px;
+	height: 750px;
 }
 .first_section{
 	background-color: #FFFFFF;
@@ -14,10 +14,10 @@
 	background-color: #ddd1e7;
 }
 .login-div{
-	visibility: hidden;
+	/*visibility: hidden;*/
 	height: 300px;
 	width: 50%;
-	background-color: rgba(230,230,250,0.96);
+	background-color: rgba(230,230,250,0.7);
     padding: 1.5em 2em 2em 2em!important;
 }
 .header-bg{
@@ -37,9 +37,27 @@
 .header{
 	text-align: center;
 }
+#headline{
+	color: white;
+	margin-bottom: 100px;
+}
+@media screen and (max-width: 600px) {
+    #headline{
+		margin-bottom: 40px;
+    }
+}
 .logo-txt{
-	position: absolute;
-	top: 0;
+	font-weight: 200;
+    margin-bottom: 0px;
+}
+.logo-desc{
+	font-weight: 600;
+    font-size: 14px;
+}
+.top-desc{
+	font-size: 18px;
+	color: white;
+	font-weight: 100
 }
 .login-btns-row{
 	padding-top: 20px; 
