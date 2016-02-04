@@ -1,5 +1,5 @@
 /* home page */
-var path = "http://localhost:9000";
+var path = "http://ec2-52-17-214-161.eu-west-1.compute.amazonaws.com:9000";
 function initScrollFire(){
 	var options = [
 		{selector: '#how-works', offset: 150, callback: "$('#how-works .module').first().addClass('come-in-left');" },
@@ -85,7 +85,6 @@ function submitBooking(){
 		phone: bookingPhone,
 		filter: $('#month-filter').val()
 	};
-
 	$.ajax({
         url: path+'/jbookings/profile',
         data: myData,

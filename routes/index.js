@@ -26,21 +26,16 @@ router.get('/jbookings', function(req, res, next) {
 /* POST home page. */
 router.post('/jbookings', function(req, res, next) {
 	if(req.body.hasOwnProperty('login')){//user trying to login
-		console.log("user trying to login");
 		validateLogin(req.body, req, res);
 	}else if(req.body.hasOwnProperty('register')){//user trying to register
-		console.log("user trying to register");
 		var aux = validateRegister(req.body);
 		if(aux == 1){//validated
-			console.log("SUCCEEDED TO VALIDATE, TRYING TO INSERT");
 			insertUser(req.body, res);
 		}else{//did not validate
-			console.log("FAILED TO VALIDATE, ABORTING...");
 			res.send( aux );
 			res.end();
 		}
 	}
-	console.log("woo"+JSON.stringify(req.body));
 	// res.end();
 });
 
@@ -56,8 +51,6 @@ router.get('/jbookings/profile', function(req, res, next) {
 
 /* GET list of bookings. */
 router.get('/jbookings/profile/listbookings', function(req, res, next) {
-	console.log("req.query = ", req.query);
-	console.log("========================================");
 	queryBookings(res, req.query.m);
 });
 
@@ -67,14 +60,12 @@ router.post('/jbookings/profile', function(req, res, next) {
 	var filter = req.body.filter;
 	delete req.body.filter;
 	req.body.user_id = uid;
-	console.log("ajax started");
 	if(validateBooking(req.body)){
 		insertBooking(req.body, res, filter)
 	}else{
 		res.send("0");
 		res.end();
 	}
-	console.log("req ", req.body);
 });
 
 /* GET logout page */
@@ -90,8 +81,6 @@ function queryBookings(res, filter){
 		if (err) {
 			console.error(err);
 		}else {
-			console.log(rows);
-			
 			res.send(tbodyContent(rows));
 		}
 		res.end();
@@ -169,7 +158,6 @@ function insertUser(obj, res){
 			console.error(err);
 			res.send("Failed to create user, contact an administrator");
 		}else{
-			console.log(result);
 			res.send("Registered successfully, you can now login");
 		}
 		res.end();
@@ -184,7 +172,6 @@ function insertBooking(obj, res, filter){
 				res.end();
 			// res.render('index', { message: 2 });
 		}else{
-			console.log(result);
 			queryBookings(res, filter);
 			// res.send("1");
 			// res.render('index', { message: 1 });
@@ -197,13 +184,9 @@ function validateLogin(obj, req, res){
 		if (err) {
 			console.error(err);
 		}else if(rows[0]['check'] == 1){//logged in successfuly
-			console.log(JSON.stringify(rows));
-			console.log("setting session ", obj["login-email"]);
 			req.session.user = obj["login-email"];
-			console.log("session value ", req.session.user);
 			req.session.uid = rows[0]['user_id'];
 			uid = req.session.uid;
-			console.log("session value ", req.session.uid);
 			res.writeHead(302, {Location: '/jbookings/profile'});
 
 			// res.render('profile', { username: obj["login-email"]});
