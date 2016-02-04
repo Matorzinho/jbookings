@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
 	password: "",
 	database: "jbookings"
 });
-
+var uid;
 connection.connect();
 /* ending mysql stuff */
 
@@ -30,13 +30,13 @@ router.post('/jbookings', function(req, res, next) {
 		validateLogin(req.body, req, res);
 	}else if(req.body.hasOwnProperty('register')){//user trying to register
 		console.log("user trying to register");
-		if(validateRegister(req.body)){//validated
+		var aux = validateRegister(req.body);
+		if(aux == 1){//validated
 			console.log("SUCCEEDED TO VALIDATE, TRYING TO INSERT");
 			insertUser(req.body, res);
-				
 		}else{//did not validate
 			console.log("FAILED TO VALIDATE, ABORTING...");
-			res.render('index', { message: 3 });
+			res.send( aux );
 			res.end();
 		}
 	}
@@ -66,6 +66,7 @@ router.get('/jbookings/profile/listbookings', function(req, res, next) {
 router.post('/jbookings/profile', function(req, res, next) {
 	var filter = req.body.filter;
 	delete req.body.filter;
+	req.body.user_id = uid;
 	console.log("ajax started");
 	if(validateBooking(req.body)){
 		insertBooking(req.body, res, filter)
@@ -84,8 +85,8 @@ router.get('/jbookings/logout', function(req, res, next) {
 });
 //querying db for bookings (filtering by month when aplicable)
 function queryBookings(res, filter){
-	var queryAddon = filter ? "where month(date) = "+filter : "";
-	connection.query('select DATE_FORMAT(date,"%d/%m/%Y") as "nicedate", time, concat_ws(" ", fname, lname) as "name", phone from bookings '+queryAddon+' order by date desc', function(err, rows, fields){
+	var queryAddon = filter ? "and month(date) = "+filter : "";
+	connection.query('select DATE_FORMAT(date,"%d/%m/%Y") as "nicedate", TIME_FORMAT(time, "%H:%i"), concat_ws(" ", fname, lname) as "name", phone from bookings where user_id = '+uid+' '+queryAddon+' order by date desc', function(err, rows, fields){
 		if (err) {
 			console.error(err);
 		}else {
@@ -138,28 +139,38 @@ function validateRegister(obj){
 			if(obj.hasOwnProperty("reg-confirm") && obj["reg-confirm"] != ""){
 				if(obj["reg-password"].length >= 6){
 					if(obj["reg-password"] == obj["reg-confirm"]){
-						return 1
+						return 1 //success
+					}else{
+						return "Passwords do not match"
 					}
+				}else{
+					return "Password is too short"
 				}
+			}else{
+				return "Please confirm the password"
 			}
+		}else{
+			return "Please insert a valid password"
 		}
+	}else{
+		return "Please insert a valid email address"
 	}
-	return 0;
+	return "Something went wrong while trying to register";
 }
 //doing directly without email validation for now
 function insertUser(obj, res){
 	var user = {
 		email: obj["reg-email"],
 		password: obj["reg-password"],
-		activated: "1"
+		// activated: "1"
 	};
 	connection.query('insert into users set ?', user, function(err, result){
 		if(err){
 			console.error(err);
-			res.render('index', { message: 2 });
+			res.send("Failed to create user, contact an administrator");
 		}else{
 			console.log(result);
-			res.render('index', { message: 1 });
+			res.send("Registered successfully, you can now login");
 		}
 		res.end();
 	});
@@ -182,7 +193,7 @@ function insertBooking(obj, res, filter){
 }
 //
 function validateLogin(obj, req, res){
-	connection.query('select count(*) as "check" from users where email = ? and password = ?', [obj["login-email"], obj["login-password"]], function(err, rows, fields){
+	connection.query('select count(*) as "check", user_id from users where email = ? and password = ?', [obj["login-email"], obj["login-password"]], function(err, rows, fields){
 		if (err) {
 			console.error(err);
 		}else if(rows[0]['check'] == 1){//logged in successfuly
@@ -190,12 +201,15 @@ function validateLogin(obj, req, res){
 			console.log("setting session ", obj["login-email"]);
 			req.session.user = obj["login-email"];
 			console.log("session value ", req.session.user);
+			req.session.uid = rows[0]['user_id'];
+			uid = req.session.uid;
+			console.log("session value ", req.session.uid);
 			res.writeHead(302, {Location: '/jbookings/profile'});
 
 			// res.render('profile', { username: obj["login-email"]});
 			res.end();
 		}else{//wrong user/pass
-			res.render('index', { message: 4 });
+			res.render('index', { message: "Wrong username or password." });
 			res.end();
 		}
 	})

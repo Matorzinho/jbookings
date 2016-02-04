@@ -1,104 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<title>JBookings</title>
-
-		<!--Import Google Icon Font-->
-      	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-	    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-
-    	<link href="/stylesheets/materialize.min.css" rel="stylesheet">
-    	<link href="/stylesheets/style.css" rel="stylesheet">
-	    <script src="/javascripts/materialize.min.js"></script>
+		<% include head %>
 	</head>
 	<body>
 		<script type="text/javascript">
-			$( document ).ready(function(){
-				$(".button-collapse").sideNav();
-				$('select').material_select();
-				$('.modal-trigger').leanModal();
-				$('.datepicker').pickadate({
-					selectMonths: true, // Creates a dropdown to control month
-					selectYears: false, // Creates a dropdown of 15 years to control year
-					container: "body",
-					min: new Date(new Date().setDate(new Date().getDate()-7)),
-					max: new Date()
-				});
-				console.log("?");
-				filterMonth();
-			});
-			function filterMonth(){
-				var urlAddon = $('#month-filter').val() ? "?m="+$('#month-filter').val() : "";
-				console.log("TRYING TO LIST BOOKINGS");
-				$.ajax({
-			        url: 'http://ec2-52-17-214-161.eu-west-1.compute.amazonaws.com:9000/jbookings/profile/listbookings'+urlAddon,
-			        type: 'GET',
-			        timeout: 5000,
-			        success: function(result) {
-		        		$('#bookings-table tbody').html(result);
-			        	console.log(result);
-			            // $("#test").append(data);
-			        },
-			        error: function(jqXHR, textStatus, errorThrown) {
-			        	console.log("this happened: ",jqXHR);
-			            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
-			        }
-			    });
-			}
-			function prepareDate(){
-				var auxDate = $('#booking-date').val().split(' ');
-				var year = auxDate[2];
-				var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(auxDate[1].substring(0, auxDate[1].length-1))+1;
-				month = month < 10 ? '0'+month : month;
-				var day = auxDate[0];
-				return [year, month, day].join('-');
-			}
-			function prepareTime(){
-				var auxDate = new Date();
-				var hours = auxDate.getHours() < 10 ? '0' + auxDate.getHours() : auxDate.getHours();
-				var minutes = auxDate.getMinutes() < 10 ? '0' + auxDate.getMinutes() : auxDate.getMinutes();
-				return hours + ':' + minutes;
-			}
-			function submitBooking(){
-				var bookingDate = prepareDate();
-				var bookingTime = prepareTime();
-				var bookingFname = $('#booking-fname').val();
-				var bookingLname = $('#booking-lname').val();
-				var bookingPhone = $('#booking-phone').val();
-				var myData = {
-					date: bookingDate,
-					time: bookingTime,
-					fname: bookingFname,
-					lname: bookingLname,
-					phone: bookingPhone,
-					filter: $('#month-filter').val()
-				};
-
-				$.ajax({
-			        url: 'http://ec2-52-17-214-161.eu-west-1.compute.amazonaws.com:9000/jbookings/profile',
-			        data: myData,
-			        type: 'POST',
-			        // dataType: "jsonp",
-			        // jsonpCallback: "_testcb",
-			        // cache: false,
-			        timeout: 5000,
-			        success: function(result) {
-			        	console.log(result);
-			        	var msg = result!=0 ? "Booking inserted successfuly" : "Something went wrong while trying to insert booking";
-			        	Materialize.toast(msg, 4000);
-		        		$('#bookings-table tbody').html(result);
-			            // $("#test").append(data);
-			        },
-			        error: function(jqXHR, textStatus, errorThrown) {
-			            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
-			        }
-			    });
-			}
+			$( document ).ready(function(){initProfilePage();});
 		</script>
 		<nav>
 			<div class="nav-wrapper" style="background-color: #885ead">
@@ -114,9 +21,7 @@
 			</div>
 		</nav>
 		<div style="background-color: #ccbadc">
-
 			<div class="container" style="padding-top: 20px; min-height: 500px; height: calc(100vh - 64px)">
-			<!-- <h3 style="margin-top: 0; text-align: center; -webkit-font-smoothing: antialiased;">whats up <%= username%></h3> -->
 				<div class="row">
 					<div class="col s12 m2" style="margin-bottom: 10px">
 						<a data-position="right" data-delay="50" data-tooltip="New Booking" class="btn-floating btn-large waves-effect waves-light purple tooltipped modal-trigger" href="#new-booking"><i class="material-icons">add</i></a>
@@ -127,20 +32,20 @@
 									<div class="row">
 										<div class="input-field col s6">
 											<input id="booking-fname" name="fname" type="text" class="validate">
-											<label for="fname">First Name</label>
+											<label for="booking-fname">First Name</label>
 										</div>
 										<div class="input-field col s6">
 											<input id="booking-lname" name="lname" type="text" class="validate">
-											<label for="lname">Last Name</label>
+											<label for="booking-lname">Last Name</label>
 										</div>
 										<div class="input-field col s6">
 											<input id="booking-date" type="date" name="date" class="datepicker">
-											<label for="date">Date</label>
+											<label for="booking-date">Date</label>
 										</div>
 										
 										<div class="input-field col s6">
 											<input id="booking-phone" name="phone" type="text" class="validate">
-											<label for="phone">Phone</label>
+											<label for="booking-phone">Phone</label>
 										</div>
 									</div>
 							</div>
@@ -148,7 +53,6 @@
 								<button onclick="submitBooking()" class=" modal-action modal-close waves-effect waves-green btn-flat">Save</button>
 							</div>
 						</div>
-						
 					</div>
 					<div class="input-field col s12 m5">
 						<select id="month-filter" onchange="filterMonth()">
@@ -177,7 +81,6 @@
 				  	</div>
 				</div>	
 				<div class="row">
-
 					<div class="col s12" style="background-color: #ddd1e7; height: calc(100vh - 325px); min-height: 200px; overflow-y: scroll;">
 						<table id="bookings-table" class="responsive-table">
 							<thead style="">
@@ -188,14 +91,12 @@
 									<th data-field="price">Phone</th>
 								</tr>
 							</thead>
-
-							<tbody style="height: 300px; overflow-y: scroll; ">
+							<tbody style="height: 300px; overflow: auto">
 							</tbody>
 				        </table>
 					</div>
 				</div>
 			</div>
 		</div>
-		
 	</body>
 </html>

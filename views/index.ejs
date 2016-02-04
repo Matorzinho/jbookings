@@ -1,76 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<title>JBookings</title>
-
-		<!--Import Google Icon Font-->
-      	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    	<link href="/stylesheets/materialize.min.css" rel="stylesheet">
-    	<link href="/stylesheets/style.css" rel="stylesheet">
-	    <script src="/javascripts/materialize.min.js"></script>
+		<% include head %>
 	</head>
 	<body>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$('.parallax').parallax();
-				// setTimeout(function(){
-					// $('.login-div').addClass('come-in-right');
-				// }, 1000);
-				// $('.header-bg, #headline').addClass('come-in-left');
-				
-
-				<% if(typeof message !='undefined') { %>
-					switch(<%= message %>){
-						case 1:
-							Materialize.toast("Registered successfully, you can now login.", 5000);
-							break;
-						case 2:
-							Materialize.toast("Failed to create user, contact an administrator.", 5000);
-							break;
-						case 3:
-							Materialize.toast("Failed to create user, check if you inserted valid data.", 5000);
-							break;
-						case 4:
-							Materialize.toast("Wrong username or password.", 5000);
-							break;
-						case 5:
-							Materialize.toast("Your session expired, please login again.", 5000);
-							break;
-					}
-				<% } %>
-				
-
-			});
-			var options = [
-				{selector: '#how-works', offset: 150, callback: "$('#how-works .module').first().addClass('come-in-left');" },
-				{selector: '#how-works', offset: 225, callback: "$('#how-works .module:nth-child(2)').addClass('come-in-bot')" },
-				{selector: '#how-works', offset: 300, callback: "$('#how-works .module').last().addClass('come-in-right')" },
-				{selector: '#feedback', offset: 300, callback: "Materialize.showStaggeredList('#feedback')" }
-			];
-			Materialize.scrollFire(options);
-      		$(function(){
-				$('#signup-btn').click(function(e){
-					e.preventDefault();
-					$('body').animate({
-			            scrollTop: $('#signup-div').offset().top - 50
-			        }, 1000); 
-				});
-				// $('#forgot-label').click(function(){
-				// 	$('#login-screen').fadeOut(500, function(){
-				// 		$('#forgot-screen').fadeIn(300);
-				// 	});
-				// });
-				// $('#close-forgot').click(function(){
-				// 	$('#forgot-screen').fadeOut(500, function(){
-
-				// 		$('#login-screen').fadeIn(300);
-				// 	});
-				// });
+				initScrollFire();
 			});
 		</script>
 		<div class="parallax-container header-parallax">
@@ -82,36 +19,32 @@
 				</header>
 				<div class="row" style="">
 					<div class="col s12 m6">
-						<p class="top-desc" style="">
+						<p class="top-desc">
 							Lorem ipsum dolor sit amet, eu ius inani scaevola. Mea tibique senserit id, habeo volumus quaerendum ea ius, has in cetero expetenda. Exerci blandit lucilius eam ut, mel ea dicat doming. Nam cetero dissentiet no, pertinacia honestatis sea ei, cum alii munere ad.
 						</p>
 					</div>
 					<div class="login-div col s12 m6">
-						<div class="row">
+						<div class="row" style="margin-bottom: -10px">
 							<form id="login-form" method="post" action="" class="col s12">
 								<div class="row">
 									<div class="input-field col s12">
 										<i class="material-icons prefix">account_circle</i>
-										<input id="icon_emai" type="email" name="login-email" class="validate">
-										<label for="icon_email">Email</label>
+										<input id="login-email" type="email" name="login-email" class="validate">
+										<label for="login-email">Email</label>
 									</div>
 									<div class="input-field col s12">
 										<i class="material-icons prefix">vpn_key</i>
-										<input id="icon_pass" type="password" name="login-password" class="validate">
-										<label for="icon_pass">Password</label>
+										<input id="login-password" type="password" name="login-password" class="validate">
+										<label for="login-password">Password</label>
 									</div>
 									<div class="col s12">
 										<div class="row login-btns-row">
-											<div class="col s6">
-												<button name="login" type="submit" class="waves-effect waves-light btn">Login</button>
-											</div>
-											<div class="col s6">
-												<button id="signup-btn" class="waves-effect waves-light red btn">Sign Up</button>
-											</div>
-											<div class="col s12 forgot-div">
-												<label class="forgot-lbl">Forgot your password? </label><div><a href="#">Click here!</a></div>
-											</div>
+												<button id="login-btn" name="login" type="submit" class="waves-effect waves-light btn">Login</button>
+												<button id="signup-btn" class="waves-effect waves-light red btn" onclick="toSignup()" type="button">Sign Up</button>
 										</div>
+										<!-- <div class="col s12 forgot-div">
+											<label class="forgot-lbl">Forgot your password? </label><div><a href="#" class="forgot-link">Click here!</a></div>
+										</div> -->
 									</div>
 								</div>
 							</form>
@@ -156,7 +89,7 @@
 						<div class="card-panel grey lighten-5 z-depth-1">
 							<div class="row valign-wrapper" style="margin-bottom: 0px">
 								<div class="col s3 m3 l2" style="height: 70px">
-									<img src="/images/profile1.jpg" alt="" class="circle responsive-img">
+									<img src="/images/user1.jpg" alt="" class="circle responsive-img">
 								</div>
 								<div class="col s9 m9 l10">
 									<span class="black-text">"Lorem ipsum dolor sit amet, eu ius inani scaevola."</span>
@@ -168,7 +101,7 @@
 						<div class="card-panel grey lighten-5 z-depth-1">
 							<div class="row valign-wrapper" style="margin-bottom: 0px">
 								<div class="col s3 m3 l2" style="height: 70px">
-									<img src="/images/profile2.jpg" alt="" class="circle responsive-img">
+									<img src="/images/user2.jpg" alt="" class="circle responsive-img">
 								</div>
 								<div class="col s9 m9 l10">
 									<span class="black-text">"Eam dolore pertinax voluptatum ei."</span>
@@ -180,7 +113,7 @@
 						<div class="card-panel grey lighten-5 z-depth-1">
 							<div class="row valign-wrapper" style="margin-bottom: 0px">
 								<div class="col s3 m3 l2" style="height: 70px">
-									<img src="/images/profile3.jpg" alt="" class="circle responsive-img">
+									<img src="/images/user3.jpg" alt="" class="circle responsive-img">
 								</div>
 								<div class="col s9 m9 l10">
 									<span class="black-text">"Vidit omittam reprehendunt cu usu, nullam epicurei maluisset vim id, impedit perfecto vituperata eu vis."</span>
@@ -192,7 +125,7 @@
 						<div class="card-panel grey lighten-5 z-depth-1">
 							<div class="row valign-wrapper" style="margin-bottom: 0px">
 								<div class="col s3 m3 l2" style="height: 70px">
-									<img src="/images/profile4.png" alt="" class="circle responsive-img">
+									<img src="/images/user4.jpg" alt="" class="circle responsive-img">
 								</div>
 								<div class="col s9 m9 l10">
 									<span class="black-text">"Eum invenire honestatis in. Eum erant virtute in, sit verear dolorum ad."</span>
@@ -205,38 +138,36 @@
 		</div>
 		<div id="signup-div" class="section second_section">
 			<div class="row container">
-
 				<h2 class="header">Join us Now!</h2>
 				<p style="font-size: 15px; font-weight: bold; text-align: center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.</p>
-
 				<div class="row">
-							<form class="col s12" action="" method="post">
-								<div class="row">
-									<div class="input-field col s12">
-										<i class="material-icons prefix">account_circle</i>
-										<input id="reg-email" name="reg-email" type="email" class="validate">
-										<label for="reg-email">Email</label>
-									</div>
-									<div class="input-field col s12">
-										<i class="material-icons prefix">vpn_key</i>
-										<input id="reg-password" name="reg-password" type="password" class="validate">
-										<label for="reg-password">Password</label>
-									</div>
-									<div class="input-field col s12">
-										<i class="material-icons prefix">repeat</i>
-										<input id="reg-confirm" name="reg-confirm" type="password" class="validate">
-										<label for="reg-confirm">Confirm Password</label>
-									</div>
-									<div class="col s12">
-										<div class="row login-btns-row">
-											<div class="col s6">
-												<button type="submit" name="register" class="waves-effect waves-light btn">Submit!</button>
-											</div>
-										</div>
+					<form class="col s12">
+						<div class="row">
+							<div class="input-field col s12">
+								<i class="material-icons prefix">account_circle</i>
+								<input id="reg-email" name="reg-email" type="email" class="validate" required>
+								<label for="reg-email">Email</label>
+							</div>
+							<div class="input-field col s12">
+								<i class="material-icons prefix">vpn_key</i>
+								<input id="reg-password" name="reg-password" type="password" class="validate" required>
+								<label for="reg-password">Password</label>
+							</div>
+							<div class="input-field col s12">
+								<i class="material-icons prefix">repeat</i>
+								<input id="reg-confirm" name="reg-confirm" type="password" class="validate" required>
+								<label for="reg-confirm">Confirm Password</label>
+							</div>
+							<div class="col s12">
+								<div class="row login-btns-row">
+									<div class="col s6">
+										<button onclick="newUser()" type="submit" id="submit-new-user" name="register" class="waves-effect waves-light btn">Submit!</button>
 									</div>
 								</div>
-							</form>
+							</div>
 						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 		<div class="parallax-container">
@@ -260,7 +191,7 @@
 				<div class="col l4 offset-l2 s12">
 					<h5 class="white-text">Check these out as well!</h5>
 					<ul>
-						<li class="valign-wrapper" style="margin-bottom:10px"><img src="/images/github-icon.png" style="height: 25px; margin-right: 5px"></img><a class="grey-text text-lighten-3" href="www.github.com/Matorzinho">/Matorzinho</a></li>
+						<li class="valign-wrapper" style="margin-bottom:10px"><img src="/images/github-icon.png" style="height: 25px; margin-right: 5px"></img><a class="grey-text text-lighten-3" href="http://www.github.com/Matorzinho">/Matorzinho</a></li>
 						<li class="valign-wrapper" style="margin-bottom:10px"><img src="/images/linkedin-icon.png" style="height: 25px; margin-right: 5px"></img><a class="grey-text text-lighten-3" href="https://ie.linkedin.com/in/dougbacelar/en">/in/dougbacelar/en</a></li>
 						<!-- <li><a class="grey-text text-lighten-3" href="#!">dougbacelar@gmail.com</a></li> -->
 					</ul>
@@ -269,10 +200,9 @@
 		</div>
 		<div class="footer-copyright">
 			<div class="container">
-			© 2014 Copyright Doug!
+			© 2016 Copyright Douglas Carvalho
 			<a class="grey-text text-lighten-4 right" href="#!">dougbacelar@gmail.com</a>
 			</div>
-
 		</div>
     </footer>
 </html>

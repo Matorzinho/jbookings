@@ -15,10 +15,9 @@
 }
 .login-div{
 	/*visibility: hidden;*/
-	height: 300px;
 	width: 50%;
 	background-color: rgba(230,230,250,0.7);
-    padding: 1.5em 2em 2em 2em!important;
+    padding: 1.5em 2em!important;
 }
 .header-bg{
 	width: 285px;
@@ -61,8 +60,34 @@
 }
 .login-btns-row{
 	padding-top: 20px; 
-	padding-left: 10px;
+	margin-bottom:5px;
+	padding-left: 20px;
 }
+#signup-btn{
+	margin-left: 20px;
+}
+/* No greater than 900px, no less than 400px */
+@media (min-width:600px) and (max-width:700px) {
+	.login-btns-row{
+		padding-left: 10px;
+
+	}
+	#signup-btn{
+		margin-left: 10px!important;
+		padding: 0 20px!important;
+	}
+	#login-btn{
+		padding: 0 20px!important;
+	}
+	.forgot-div{
+		padding: 0!important;
+	}
+	.forgot-lbl, .forgot-link{
+		font-size: 13.5px!important;
+	}
+
+}
+
 .forgot-div{
 	padding-top: 20px!important;
 }
