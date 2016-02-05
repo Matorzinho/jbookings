@@ -1,5 +1,5 @@
 /* home page */
-var path = "http://ec2-52-17-214-161.eu-west-1.compute.amazonaws.com:9000";
+var path = "http://dougbacelar.com";
 function initScrollFire(){
 	var options = [
 		{selector: '#how-works', offset: 150, callback: "$('#how-works .module').first().addClass('come-in-left');" },
@@ -72,33 +72,48 @@ function prepareTime(){
 	return hours + ':' + minutes;
 }
 function submitBooking(){
-	var bookingDate = prepareDate();
-	var bookingTime = prepareTime();
 	var bookingFname = $('#booking-fname').val();
 	var bookingLname = $('#booking-lname').val();
 	var bookingPhone = $('#booking-phone').val();
-	var myData = {
-		date: bookingDate,
-		time: bookingTime,
-		fname: bookingFname,
-		lname: bookingLname,
-		phone: bookingPhone,
-		filter: $('#month-filter').val()
-	};
-	$.ajax({
-        url: path+'/jbookings/profile',
-        data: myData,
-        type: 'POST',
-        timeout: 5000,
-        success: function(result) {
-        	var msg = result!=0 ? "Booking inserted successfuly" : "Something went wrong while trying to insert booking";
-        	Materialize.toast(msg, 4000);
-    		$('#bookings-table tbody').html(result);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
-        }
-    });
+	if(validateBooking(bookingFname, bookingLname, $('#booking-date').val(), bookingPhone)){
+		var bookingDate = prepareDate();
+		var bookingTime = prepareTime();
+		var myData = {
+			date: bookingDate,
+			time: bookingTime,
+			fname: bookingFname,
+			lname: bookingLname,
+			phone: bookingPhone,
+			filter: $('#month-filter').val()
+		};
+		$.ajax({
+	        url: path+'/jbookings/profile',
+	        data: myData,
+	        type: 'POST',
+	        timeout: 5000,
+	        success: function(result) {
+	        	var msg = result!=0 ? "Booking inserted successfuly" : "Something went wrong while trying to insert booking";
+	        	Materialize.toast(msg, 4000);
+	    		$('#bookings-table tbody').html(result);
+	        },
+	        error: function(jqXHR, textStatus, errorThrown) {
+	        	console.log("ajax error", textStatus);
+	            Materialize.toast('error ' + textStatus + ' ' + errorThrown);
+	        }
+	    });
+	}
+}
+function validateBooking(fname, lname, date, phone){
+	for(i = 0; i < arguments.length; i++){
+		if(arguments[i] == ""){
+			Materialize.toast("Please insert a " + ["First Name", "Last Name", "Date", "Phone"][i], 4000);
+			$('#new-booking').closeModal();
+			$('#new-booking').openModal();
+			return 0
+		}
+	}
+	return 1
+	// $('#new-booking').closeModal();
 }
 function initProfilePage(){
 	$(".button-collapse").sideNav();

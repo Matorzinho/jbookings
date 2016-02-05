@@ -76,11 +76,14 @@ router.get('/jbookings/logout', function(req, res, next) {
 });
 //querying db for bookings (filtering by month when aplicable)
 function queryBookings(res, filter){
+	console.log("==========QUERY BOOKINGS========");
 	var queryAddon = filter ? "and month(date) = "+filter : "";
 	connection.query('select DATE_FORMAT(date,"%d/%m/%Y") as "nicedate", TIME_FORMAT(time, "%H:%i"), concat_ws(" ", fname, lname) as "name", phone from bookings where user_id = '+uid+' '+queryAddon+' order by date desc', function(err, rows, fields){
 		if (err) {
+			console.log("==========QUERY BOOKINGS ERROR========", err);
 			console.error(err);
 		}else {
+			console.log("==========QUERY BOOKINGS SUCCESS========", rows);
 			res.send(tbodyContent(rows));
 		}
 		res.end();
@@ -168,10 +171,12 @@ function insertBooking(obj, res, filter){
 	connection.query('insert into bookings set ?', obj, function(err, result){
 		if(err){
 			console.error(err);
-				res.send("0");
-				res.end();
+			console.log("QUERY ERROR ", err);
+			res.send("0");
+			res.end();
 			// res.render('index', { message: 2 });
 		}else{
+			console.log("QUERY SUCCESS");
 			queryBookings(res, filter);
 			// res.send("1");
 			// res.render('index', { message: 1 });
