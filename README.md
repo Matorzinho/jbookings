@@ -1,5 +1,5 @@
-# bookings
-Jenny's bookings
+# jbookings
+_Jenny's bookings_
 
 Experimental project created for learning purposes.
 
